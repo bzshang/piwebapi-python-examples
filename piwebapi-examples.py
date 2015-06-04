@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import requests as req
 import json
 from bunch import bunchify, unbunchify
