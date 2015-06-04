@@ -57,8 +57,8 @@ def update_af_attribute(af_attribute_dict, json_data, headers):
 
 if __name__ == "__main__":
 
-    pi_webapi_server = 'BSHANG-WEB2'
-    pi_asset_server = 'BSHANGE6430S'
+    pi_webapi_server = 'SECRETWEBSERVER'
+    pi_asset_server = 'SECRETAFSERVER'
     pi_asset_database = 'Sandbox'
 
     # get the root level PI Web API

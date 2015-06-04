@@ -44,7 +44,7 @@ Now, let's see what the `get_pi_webapi_root` function does.
 def get_pi_webapi_root(webapi_server):
     # verify=False is to ignore SSL verification but this will vary depending on environment
     root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
-    # deserialize json into python dictionary
+    # deserialize json into python dictionary. then convert to dot-accessible dictionary
     return bunchify(json.loads(root_response.text))
 ```
 
@@ -202,7 +202,7 @@ and then call by helper method `update_af_attribute()`, shown below.
     attribute_update_response = req.patch(af_attribute_dict.Links.Self,
                                           json=json_data,
                                           headers=headers,
-                                         verify=False)
+                                          verify=False)
 ```
 
 To update attribute metadata, I need to issue an HTTP PATCH request, which I can do using `req.patch()`. Lastly, I read
