@@ -55,10 +55,6 @@ def update_af_attribute(af_attribute_dict, json_data, headers):
                                           verify=False)
     return attribute_update_response
 
-def search_pisystem(webapi_root_dict, params):
-    search_results = req.get(webapi_root_dict.Links.Self + 'search/query', params=params, verify=False)
-    return bunchify(json.loads(search_results.text))
-
 if __name__ == "__main__":
 
     pi_webapi_server = 'BSHANG-WEB2'
@@ -133,11 +129,6 @@ if __name__ == "__main__":
     # output:
     # Hello world
 
-    # Find PI System objects using Indexed Search
-    req_params = {'q': 'name:sinu*'}
-    results = search_pisystem(pi_webapi_root, req_params)
-    print unbunchify(results)
-    # output:
 
 
 
