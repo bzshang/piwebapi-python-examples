@@ -62,31 +62,31 @@ if __name__ == "__main__":
     pi_asset_database = 'Sandbox'
 
     # 1.0 --------------------------------------------------------------------------------------------------------------
-    # get the root level PI Web API
+    # Get the root level PI Web API
     pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
     print unbunchify(pi_webapi_root)
 
     # 2.0 --------------------------------------------------------------------------------------------------------------
-    # get AF server
+    # Get AF server
     af_server = get_asset_server(pi_webapi_root, pi_asset_server)
 
     # 3.0 --------------------------------------------------------------------------------------------------------------
-    # get AF database from server
+    # Get AF database from server
     af_database = get_database(af_server, pi_asset_database)
 
-    # get AF element from database
+    # Get AF element from database
     af_element = get_element(af_database, "MyElement")
 
-    # get AF attribute from element
+    # Get AF attribute from element
     af_attribute = get_attribute(af_element, "MyAttribute")
 
     # 4.0 --------------------------------------------------------------------------------------------------------------
-    # retrieve the same attribute by path
+    # Retrieve the same attribute by path
     req_params = {'path': '\\\\BSHANGE6430S\\SandBox\\MyElement|MyAttribute'}
     af_attribute = get_attribute_by_path(pi_webapi_root, req_params)
 
     # 5.0 --------------------------------------------------------------------------------------------------------------
-    # get AF value for attribute
+    # Get AF value for attribute
     af_value = get_stream_value(af_attribute, None)
 
     print unbunchify(af_value)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     # u'Substituted': False}
 
     # 6.0 --------------------------------------------------------------------------------------------------------------
-    # write a value to MyAttribute
+    # Write a value to MyAttribute
     req_data = {'Timestamp': '2015-06-03T00:00:00', 'Value': '25.0'}
     req_headers = {'Content-Type': 'application/json'}
     post_result = post_stream_value(af_attribute, req_data, req_headers)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     # output:
     # 202
 
-    # read back the value just written
+    # Read back the value just written
     req_params = {'time': '2015-06-03T00:00:00'}
     af_value = get_stream_value(af_attribute, req_params)
     print unbunchify(af_value)
