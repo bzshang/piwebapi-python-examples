@@ -33,7 +33,7 @@ afterward. These helper functions are merely used to encapsulate basic operation
 implementation details. These functions do not represent best practices or offer a guide for designing Python wrappers
 for PI Web API calls. My experience with Python can be measured in units of days, rather than years...
 
-## Tutorial
+## Examples
 
 Follow along in the code in [piwebapi-examples.py](https://github.com/bzshang/piwebapi-python-examples/blob/master/piwebapi-examples.py).
 
@@ -167,7 +167,7 @@ in the browser.
 Perhaps a better way to obtain the attribute is to use PI Indexed Search via `GET search/query`, but I will leave it up
 to the reader :wink:
 
-##% 5.0 Get the current value of MyAttribute
+### 5.0 Get the current value of MyAttribute
 
 I use a helper function `get_stream_value()` and `req.get()` function from the `requests` library. Nothing new here.
 
@@ -227,6 +227,12 @@ back in the attribute to verify that I've updated successfully, using my helper 
 the result in `af_attribute`. Because of the work I've done to return a dot-accessible dictionary, I can easily inspect 
 the attribute description simply via `af_attribute.Description`. Hello world!
 
+## Summary
 
+In these examples, we've demonstrated the basic usage of PI Web API with the `requests` package in Python. Being able to
+access PI System data within Python brings the rich features of Python into PI, such as its numerical and scientific libraries
+(numpy, scipy, pandas, scikit-learn, etc.) and also its web application framework (Django).
 
+For questions or comments, pelase visit the associated blog post in 
+[PI Developer's Club](https://pisquare.osisoft.com/community/developers-club/blog/2015/06/04/using-pi-web-api-with-python).
 
