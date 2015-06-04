@@ -48,7 +48,7 @@ def get_pi_webapi_root(webapi_server):
     return bunchify(json.loads(root_response.text))
 ```
 
-It accepts the name of the web API server. Then, I issue an HTTP GET to the base URL using
+It accepts the name of the web API server. Then, I issue an HTTP GET to the base URL using `req.get()`
 
 ```Python
 root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
@@ -62,8 +62,46 @@ cookies, etc. See the [reqests documentation](http://docs.python-requests.org/en
 for more details about this object.
 
 `root_response.text` returns the response body as a string. I want to convert this into a Python dictionary, so I can
-more easily work with the response and not worry about parsing JSON strings. However, I am also greedy (or lazy) and
-don't want to access the response type using `dict["Key"]` syntax. Instead, I prefer `dict.Key`, evocative  of 
+more easily work with the response and not worry about parsing JSON strings. However, I am also greedy (or lazy) :wink:
+and don't want to access the response type using `dict["Key"]` syntax. Instead, I prefer `dict.Key`, evocative  of 
 C# anonymous types. The [`bunch`](https://pypi.python.org/pypi/bunch/1.0.1) library allows me to do this, and `bunchify`
 converts the ordinary dictionary into a dot-accessible dictionary.
+
+
+
+## Get AF server
+
+Now that I have the root level response (as a dictionary), I want to target a specific AF server. I use the 
+helper function below to do so.
+
+```Python
+    af_server = get_asset_server(pi_webapi_root, pi_asset_server)
+```
+
+The function accepts the root object and also the name of the AF server I want. Let's look at this function.
+
+```Python
+def get_asset_server(webapi_root_dict, asset_server):
+    asset_servers_response = req.get(webapi_root_dict.Links.AssetServers, verify=False)
+    asset_servers_dict = bunchify(json.loads(asset_servers_response.text))
+    asset_server_dict = next((x for x in asset_servers_dict.Items if x.Name == asset_server), None)
+    return bunchify(asset_server_dict)
+```
+
+My ultimate goal is to obtain an object representing the target AF server. From the root dictionary, I issue an HTTP
+GET, passing in the URL `webapi_root_dict.Links.AssetServers`, whichs returns a JSON with a list of
+available AF servers. Again I also `bunchify()` the response into a dot-accessible dictionary.
+
+Now, I need just the part of the dictionary that contains the AF server I'm interested in. I will use the `next()`
+function to retrieve the first matching entry in the list of AF servers, and default to `None`. I could have written the
+`for` loop and conditional check on separate lines, but I just want to show off Python's awesome support for list
+comprehensions. It is also more evocative of LINQ's `Select(x => x.Name == asset_server)` that I am accustomed to in C#.
+
+```
+Short diversion: By using links, I'm inherently using the RESTful PI Web API's support for HATEOAS (Hypermedia as the 
+Engine of Application State). I simply need to understand the media types and link relations among the response 
+hypermedia, and can use hyperlinks to obtain other resources. Contrast this with SOAP, in which I would need to 
+understand the interface contracts, object models, and application logic exposed by the service.
+```
+
 

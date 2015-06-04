@@ -5,7 +5,7 @@ from bunch import bunchify, unbunchify
 def get_pi_webapi_root(webapi_server):
     # verify=False is to ignore SSL verification but this will vary depending on environment
     root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
-    # deserialize json into python dictionary
+    # deserialize json into python dictionary. then convert to dot-accessible dictionary
     return bunchify(json.loads(root_response.text))
 
 def get_asset_server(webapi_root_dict, asset_server):
