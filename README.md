@@ -104,4 +104,17 @@ hypermedia, and can use hyperlinks to obtain other resources. Contrast this with
 understand the interface contracts, object models, and application logic exposed by the service.
 ```
 
+## Get AF database, element, attribute
+
+Now that I have the AF server, I want to "drill down" to the AF attribute of intered. The rest of the functions are 
+similar to what I did to grab the AF server.
+
+```Python
+    af_database = get_database(af_server, pi_asset_database)
+    af_element = get_element(af_database, "MyElement")
+    af_attribute = get_attribute(af_element, "MyAttribute")
+```
+
+You will notice `get_database()` is very similar to `get_asset_server()`. I wasn't kidding when I said I wasn't a Python
+developer, and that these helper functions do not expose elegant class library design...
 
