@@ -61,7 +61,7 @@ def get_pi_webapi_root(webapi_server):
 It accepts the name of the web API server. Then, I issue an HTTP GET to the base URL using `req.get()`
 
 ```Python
-root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
+    root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
 ```
 
 ```
