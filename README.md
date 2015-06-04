@@ -8,17 +8,17 @@ The attribute is configured as a PI Point DR.
 I've set these variables in the code as shown below:
 
 ```Python
-pi_webapi_server = 'SECRETWEBSERVER'
-pi_asset_server = 'SECRETAFSERVER'
-pi_asset_database = 'Sandbox'
+    pi_webapi_server = 'SECRETWEBSERVER'
+    pi_asset_server = 'SECRETAFSERVER'
+    pi_asset_database = 'Sandbox'
 ```
 
 In the header, I've imported the relevant packages and functions that I need.
 
 ```Python
-import requests as req
-import json
-from bunch import bunchify, unbunchify
+    import requests as req
+    import json
+    from bunch import bunchify, unbunchify
 ```
 
 * [requests](http://docs.python-requests.org/en/latest/) is used as the HTTP client library. 
@@ -45,7 +45,7 @@ also by going to `https://<piwebapiserver>/piwebapi/` in the browser.
 I make the call
 
 ```Python
-pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
+    pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
 ```
 
 Now, let's see what the `get_pi_webapi_root()` function does.
@@ -231,8 +231,8 @@ the attribute description simply via `af_attribute.Description`. Hello world!
 
 In these examples, we've demonstrated the basic usage of PI Web API with the `requests` package in Python. Being able to
 access PI System data within Python brings the rich features of Python into PI, such as its numerical and scientific libraries
-(numpy, scipy, pandas, scikit-learn, etc.) and also its web application framework (Django).
+(numpy, scipy, pandas, scikit-learn, etc.) and also its popular web application framework (Django).
 
 For questions or comments, pelase visit the associated blog post in 
-[PI Developer's Club](https://pisquare.osisoft.com/community/developers-club/blog/2015/06/04/using-pi-web-api-with-python).
+[PI Developers Club](https://pisquare.osisoft.com/community/developers-club/blog/2015/06/04/using-pi-web-api-with-python).
 
