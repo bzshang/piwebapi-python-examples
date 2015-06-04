@@ -13,7 +13,7 @@ pi_asset_server = 'SECRETAFSERVER'
 pi_asset_database = 'Sandbox'
 ```
 
-In the header, you will see I've imported the relevant packages and functions that I need.
+In the header, I've imported the relevant packages and functions that I need.
 
 ```Python
 import requests as req
@@ -21,9 +21,16 @@ import json
 from bunch import bunchify, unbunchify
 ```
 
+[requests](http://docs.python-requests.org/en/latest/) is used as the HTTP client library. 
+[json](https://docs.python.org/2/library/json.html) as the name suggests helps me deserialize JSON text into Python 
+dictionaries and vice versa. 
+[bunch](https://pypi.python.org/pypi/bunch/1.0.1) is a package that provides a wrapper class around Python dictionaries 
+so I can browse the dictionary using dot notation (e.g. dict.key instead of dict["key"]), evocative of the C# anonymous 
+type.
+
 
 The example file is structured with a set of helper functions in the beginning and the usage of these functions 
-afterward. These helper methods are merely used to encapsulate basic operations on AF objects and hide away some 
+afterward. These helper functions are merely used to encapsulate basic operations on AF objects and hide away some 
 implementation details. Please do not take these functions as best practice or a guide for designing Python wrappers
 for PI Web API calls. My experience with Python can be measured in units of days, rather than years...
 
@@ -152,7 +159,7 @@ to the reader :wink:
 
 ## Get the current value of MyAttribute
 
-I use a helper method `get_stream_value()` and `req.get()` function from the `requests` library. Nothing new here.
+I use a helper function `get_stream_value()` and `req.get()` function from the `requests` library. Nothing new here.
 
 ## Write a value to MyAttribute: POST JSON using `requests`
 
@@ -165,8 +172,8 @@ Something new here. Here is the code I use to formulate the request.
 ```
 
 First, I set the query string in the URL via the `req_data` dictionary I created. Then, I set the HTTP request header
-using the `req_headers` dictionary. I pass both of these variables into my helper method `post_stream_value` along with
-my (dot-accessible) AF attribute dictionary. Here is the helper method.
+using the `req_headers` dictionary. I pass both of these variables into my helper function `post_stream_value` along with
+my (dot-accessible) AF attribute dictionary. Here is the helper function.
 
 ```Python
 def post_stream_value(af_attribute_dict, json_data, headers):
@@ -196,7 +203,7 @@ attribute to introduce herself to the world. Here is how to do so.
 ```
 
 It is the same dog and maybe a new trick. I formulate the request JSON in `req_data`, set the header in `req_headers`
-and then call by helper method `update_af_attribute()`, shown below.
+and then call by helper function `update_af_attribute()`, shown below.
 
 ```Python
     attribute_update_response = req.patch(af_attribute_dict.Links.Self,
