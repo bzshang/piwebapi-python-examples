@@ -63,7 +63,6 @@ if __name__ == "__main__":
 
     # get the root level PI Web API
     pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
-
     print unbunchify(pi_webapi_root)
 
     # get AF server
