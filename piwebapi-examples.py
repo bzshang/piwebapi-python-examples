@@ -61,13 +61,16 @@ if __name__ == "__main__":
     pi_asset_server = 'SECRETAFSERVER'
     pi_asset_database = 'Sandbox'
 
+    # 1.0 --------------------------------------------------------------------------------------------------------------
     # get the root level PI Web API
     pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
     print unbunchify(pi_webapi_root)
 
+    # 2.0 --------------------------------------------------------------------------------------------------------------
     # get AF server
     af_server = get_asset_server(pi_webapi_root, pi_asset_server)
 
+    # 3.0 --------------------------------------------------------------------------------------------------------------
     # get AF database from server
     af_database = get_database(af_server, pi_asset_database)
 
@@ -77,10 +80,12 @@ if __name__ == "__main__":
     # get AF attribute from element
     af_attribute = get_attribute(af_element, "MyAttribute")
 
+    # 4.0 --------------------------------------------------------------------------------------------------------------
     # retrieve the same attribute by path
     req_params = {'path': '\\\\BSHANGE6430S\\SandBox\\MyElement|MyAttribute'}
     af_attribute = get_attribute_by_path(pi_webapi_root, req_params)
 
+    # 5.0 --------------------------------------------------------------------------------------------------------------
     # get AF value for attribute
     af_value = get_stream_value(af_attribute, None)
 
@@ -93,6 +98,7 @@ if __name__ == "__main__":
     # u'Value': 1.0,
     # u'Substituted': False}
 
+    # 6.0 --------------------------------------------------------------------------------------------------------------
     # write a value to MyAttribute
     req_data = {'Timestamp': '2015-06-03T00:00:00', 'Value': '25.0'}
     req_headers = {'Content-Type': 'application/json'}
@@ -113,6 +119,7 @@ if __name__ == "__main__":
     # u'Value': 1.0,
     # u'Substituted': False}
 
+    # 7.0 --------------------------------------------------------------------------------------------------------------
     # Add a description to MyAttribute
     req_data = {'Description': 'Hello world'}
     req_headers = {'Content-Type': 'application/json'}

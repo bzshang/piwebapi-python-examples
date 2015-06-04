@@ -21,20 +21,23 @@ import json
 from bunch import bunchify, unbunchify
 ```
 
-[requests](http://docs.python-requests.org/en/latest/) is used as the HTTP client library. 
-[json](https://docs.python.org/2/library/json.html) as the name suggests helps me deserialize JSON text into Python 
+* [requests](http://docs.python-requests.org/en/latest/) is used as the HTTP client library. 
+* [json](https://docs.python.org/2/library/json.html) as the name suggests helps me deserialize JSON text into Python 
 dictionaries and vice versa. 
-[bunch](https://pypi.python.org/pypi/bunch/1.0.1) is a package that provides a wrapper class around Python dictionaries 
+* [bunch](https://pypi.python.org/pypi/bunch/1.0.1) is a package that provides a wrapper class around Python dictionaries 
 so I can browse the dictionary using dot notation (e.g. dict.key instead of dict["key"]), evocative of the C# anonymous 
 type.
 
-
 The example file is structured with a set of helper functions in the beginning and the usage of these functions 
 afterward. These helper functions are merely used to encapsulate basic operations on AF objects and hide away some 
-implementation details. Please do not take these functions as best practice or a guide for designing Python wrappers
+implementation details. These functions do not represent best practices or offer a guide for designing Python wrappers
 for PI Web API calls. My experience with Python can be measured in units of days, rather than years...
 
-## Get the root level PI Web API response
+## Tutorial
+
+Follow along in the code in [piwebapi-examples.py](https://github.com/bzshang/piwebapi-python-examples/blob/master/piwebapi-examples.py).
+
+### 1.0 Get the root level PI Web API response
 
 To make things transparent, I will show how to get the root level response from a PI Web API call, which can be obtained
 also by going to `https://<piwebapiserver>/piwebapi/` in the browser.
@@ -45,7 +48,7 @@ I make the call
 pi_webapi_root = get_pi_webapi_root(pi_webapi_server)
 ```
 
-Now, let's see what the `get_pi_webapi_root` function does.
+Now, let's see what the `get_pi_webapi_root()` function does.
 
 ```Python
 def get_pi_webapi_root(webapi_server):
@@ -61,6 +64,11 @@ It accepts the name of the web API server. Then, I issue an HTTP GET to the base
 root_response = req.get('https://' + webapi_server + '/piwebapi', verify=False)
 ```
 
+```
+    Note that the full function call is requests.get(), but because I've imported the package using 
+    'import requests as req', I can use this naming shortcut.
+```
+
 The `verify=False` is to ignore SSL certificate validation by the client, as in this case, I have a self-signed 
 certificate.
 
@@ -69,15 +77,15 @@ cookies, etc. See the [reqests documentation](http://docs.python-requests.org/en
 for more details about this object.
 
 `root_response.text` returns the response body as a string. I want to convert this into a Python dictionary, so I can
-more easily work with the response and not worry about parsing JSON strings. However, I am also greedy (or lazy) :wink:
-and don't want to access the response type using `dict["Key"]` syntax. Instead, I prefer `dict.Key`, evocative  of 
-C# anonymous types. The [`bunch`](https://pypi.python.org/pypi/bunch/1.0.1) library allows me to do this, and `bunchify`
-converts the ordinary dictionary into a dot-accessible dictionary.
+more easily work with the response and not worry about parsing JSON strings. `json.loads()` allows me to do this. 
+However, I am also greedy (or lazy) :wink:and don't want to access the response type using `dict["Key"]` syntax. 
+Instead, I prefer `dict.Key`, evocative  of C# anonymous types. The [`bunch`](https://pypi.python.org/pypi/bunch/1.0.1) 
+library allows me to do this, and `bunchify()` converts the ordinary dictionary into a dot-accessible dictionary.
 
-## Get AF server
+### 2.0 Get AF server
 
-Now that I have the root level response (as a dictionary), I want to target a specific AF server. I use the 
-helper function below to do so.
+Now that I have the root level response (as a dot-accessible dictionary), I want to target a specific AF server. I use 
+the helper function below to do so.
 
 ```Python
     af_server = get_asset_server(pi_webapi_root, pi_asset_server)
@@ -95,23 +103,24 @@ def get_asset_server(webapi_root_dict, asset_server):
 
 My ultimate goal is to obtain an object representing the target AF server. From the root dictionary, I issue an HTTP
 GET, passing in the URL `webapi_root_dict.Links.AssetServers`, whichs returns a JSON with a list of
-available AF servers. Again I also `bunchify()` the response into a dot-accessible dictionary.
+available AF servers. Again, I also `bunchify()` the response into a dot-accessible dictionary.
 
 Now, I need just the part of the dictionary that contains the AF server I'm interested in. I will use the `next()`
 function to retrieve the first matching entry in the list of AF servers, and default to `None`. I could have written the
-`for` loop and conditional check on separate lines, but I just want to show off Python's awesome support for list
-comprehensions. It is also more evocative of LINQ's `Select(x => x.Name == asset_server)` that I am accustomed to in C#.
+`for` loop and `if` check on separate lines, but I just want to show off Python's awesome support for [list
+comprehensions](https://docs.python.org/2/tutorial/datastructures.html). It is also more evocative of LINQ's 
+`Select(x => x.Name == asset_server)` that I am accustomed to in C#.
 
-```
-Short diversion: By using links, I'm inherently using the RESTful PI Web API's support for HATEOAS (Hypermedia as the 
-Engine of Application State). I simply need to understand the media types and link relations among the response 
-hypermedia, and can use hyperlinks to obtain other resources. Contrast this with SOAP, in which I would need to 
-understand the interface contracts, object models, and application logic exposed by the service.
-```
+**Short diversion:** By using links, I'm inherently using the RESTful PI Web API's support for [HATEOAS]
+(http://en.wikipedia.org/wiki/HATEOAS) (Hypermedia as the Engine of Application State). I simply need to understand the 
+media types and link relations among the response hypermedia, and can use hyperlinks to obtain other resources. Contrast
+this with SOAP, in which I would need to understand the interface contracts, object models, and application logic 
+exposed by the service.
 
-## Get AF database, element, attribute
 
-Now that I have the AF server, I want to "drill down" to the AF attribute of intered. The rest of the functions are 
+### 3.0 Get AF database, element, attribute
+
+Now that I have the AF server, I want to "drill down" to the AF attribute of interest. The rest of the functions are 
 similar to what I did to grab the AF server.
 
 ```Python
@@ -123,11 +132,12 @@ similar to what I did to grab the AF server.
 You will notice `get_database()` is very similar to `get_asset_server()`. I wasn't kidding when I said I wasn't a Python
 developer, and that these helper functions do not expose elegant class library design...
 
-## Get AF attribute by path: Setting the query string in `requests`
+### 4.0 Get AF attribute by path: Setting the query string in `requests`
 
 We made a lot of round-trips to the server just to get an attribute, which is a poor practice. What we could have done 
 is get the attribute in one HTTP call by passing in the attribute path as a query string, using the PI Web API call
-`GET attributes`. In Python, I use
+`GET attributes`. See the [PI Web API Online Documentation](https://techsupport.osisoft.com/Documentation/PI-Web-API/help.html) for details.
+In Python, I use
 
 ```Python
     req_params = {'path': '\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute'}
@@ -135,7 +145,7 @@ is get the attribute in one HTTP call by passing in the attribute path as a quer
 ```
 
 First, I set the query string parameters by creating a Python dictionary to store them. I created a helper function
-`get_attribute_by_path` to find the attribute based on path. Here is that function.
+`get_attribute_by_path()` to find the attribute based on path. Here is that function.
 
 ```Python
 def get_attribute_by_path(webapi_root_dict, params):
@@ -148,20 +158,20 @@ Using `req.get()` from the `requests` package, I simply issue a GET request pass
 `https://SECRETWEBSERVER/piwebapi/attributes`, and the query string as a function argument as `params=params`. The 
 response is the same as if I went to 
 
-'''
-https://SECRETWEBSERVER/piwebapi/attributes?path=\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute
-'''
+```
+    https://SECRETWEBSERVER/piwebapi/attributes?path=\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute
+```
 
 in the browser.
 
 Perhaps a better way to obtain the attribute is to use PI Indexed Search via `GET search/query`, but I will leave it up
 to the reader :wink:
 
-## Get the current value of MyAttribute
+##% 5.0 Get the current value of MyAttribute
 
 I use a helper function `get_stream_value()` and `req.get()` function from the `requests` library. Nothing new here.
 
-## Write a value to MyAttribute: POST JSON using `requests`
+### 6.0 Write a value to MyAttribute: POST JSON using `requests`
 
 Something new here. Here is the code I use to formulate the request.
 
@@ -191,7 +201,7 @@ status code later using `print post_result.status_code`.
 Just as an additional check, I read back in the value I just wrote using `get_stream_value()` but this time pass in a 
 query string denoting the timestamp.
 
-## Add a description to MyAttribute: PATCH using `requests`
+### 7.0 Add a description to MyAttribute: PATCH using `requests`
 
 These examples would not be complete if I hadn't snuck in `Hello world` somewhere in here. So we will allow our
 attribute to introduce herself to the world. Here is how to do so.
