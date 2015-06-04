@@ -212,7 +212,7 @@ attribute to introduce herself to the world. Here is how to do so.
     patch_result = update_af_attribute(af_attribute, req_data, req_headers)
 ```
 
-It is the same dog and maybe a new trick. I formulate the request JSON in `req_data`, set the header in `req_headers`
+It is the same dog but maybe a new trick. I formulate the request JSON in `req_data`, set the header in `req_headers`
 and then call by helper function `update_af_attribute()`, shown below.
 
 ```Python
