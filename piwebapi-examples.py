@@ -80,7 +80,6 @@ if __name__ == "__main__":
     # retrieve the same attribute by path
     req_params = {'path': '\\\\BSHANGE6430S\\SandBox\\MyElement|MyAttribute'}
     af_attribute = get_attribute_by_path(pi_webapi_root, req_params)
-    print unbunchify(af_attribute)
 
     # get AF value for attribute
     af_value = get_stream_value(af_attribute, None)

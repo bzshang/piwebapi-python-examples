@@ -67,8 +67,6 @@ and don't want to access the response type using `dict["Key"]` syntax. Instead, 
 C# anonymous types. The [`bunch`](https://pypi.python.org/pypi/bunch/1.0.1) library allows me to do this, and `bunchify`
 converts the ordinary dictionary into a dot-accessible dictionary.
 
-
-
 ## Get AF server
 
 Now that I have the root level response (as a dictionary), I want to target a specific AF server. I use the 
@@ -117,4 +115,101 @@ similar to what I did to grab the AF server.
 
 You will notice `get_database()` is very similar to `get_asset_server()`. I wasn't kidding when I said I wasn't a Python
 developer, and that these helper functions do not expose elegant class library design...
+
+## Get AF attribute by path: Setting the query string in `requests`
+
+We made a lot of round-trips to the server just to get an attribute, which is a poor practice. What we could have done 
+is get the attribute in one HTTP call by passing in the attribute path as a query string, using the PI Web API call
+`GET attributes`. In Python, I use
+
+```Python
+    req_params = {'path': '\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute'}
+    af_attribute = get_attribute_by_path(pi_webapi_root, req_params)
+```
+
+First, I set the query string parameters by creating a Python dictionary to store them. I created a helper function
+`get_attribute_by_path` to find the attribute based on path. Here is that function.
+
+```Python
+def get_attribute_by_path(webapi_root_dict, params):
+    attribute_url = webapi_root_dict.Links.Self + 'attributes'
+    asset_attributes_response = req.get(attribute_url, params=params, verify=False)
+    return bunchify(json.loads(asset_attributes_response.text))
+```
+
+Using `req.get()` from the `requests` package, I simply issue a GET request passing in the URL
+`https://SECRETWEBSERVER/piwebapi/attributes`, and the query string as a function argument as `params=params`. The 
+response is the same as if I went to 
+
+'''
+https://SECRETWEBSERVER/piwebapi/attributes?path=\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute
+'''
+
+in the browser.
+
+Perhaps a better way to obtain the attribute is to use PI Indexed Search via `GET search/query`, but I will leave it up
+to the reader :wink:
+
+## Get the current value of MyAttribute
+
+I use a helper method `get_stream_value()` and `req.get()` function from the `requests` library. Nothing new here.
+
+## Write a value to MyAttribute: POST JSON using `requests`
+
+Something new here. Here is the code I use to formulate the request.
+
+```Python
+    req_data = {'Timestamp': '2015-06-03T00:00:00', 'Value': '25.0'}
+    req_headers = {'Content-Type': 'application/json'}
+    post_result = post_stream_value(af_attribute, req_data, req_headers)
+```
+
+First, I set the query string in the URL via the `req_data` dictionary I created. Then, I set the HTTP request header
+using the `req_headers` dictionary. I pass both of these variables into my helper method `post_stream_value` along with
+my (dot-accessible) AF attribute dictionary. Here is the helper method.
+
+```Python
+def post_stream_value(af_attribute_dict, json_data, headers):
+    attribute_value_response = req.post(af_attribute_dict.Links.Value,
+                                        json=json_data,
+                                        headers=headers,
+                                        verify=False)
+    return attribute_value_response
+```
+
+To issue a POST in `requests`, it is very simple. Just use `req.post()`. I pass in the relevant URL, JSON body, and
+header information. Note I am returning the raw response object, as there is no JSON returned and I can inspect the
+status code later using `print post_result.status_code`.
+
+Just as an additional check, I read back in the value I just wrote using `get_stream_value()` but this time pass in a 
+query string denoting the timestamp.
+
+## Add a description to MyAttribute: PATCH using `requests`
+
+These examples would not be complete if I hadn't snuck in `Hello world` somewhere in here. So we will allow our
+attribute to introduce herself to the world. Here is how to do so.
+
+```Python
+    req_data = {'Description': 'Hello world'}
+    req_headers = {'Content-Type': 'application/json'}
+    patch_result = update_af_attribute(af_attribute, req_data, req_headers)
+```
+
+It is the same dog and maybe a new trick. I formulate the request JSON in `req_data`, set the header in `req_headers`
+and then call by helper method `update_af_attribute()`, shown below.
+
+```Python
+    attribute_update_response = req.patch(af_attribute_dict.Links.Self,
+                                          json=json_data,
+                                          headers=headers,
+                                         verify=False)
+```
+
+To update attribute metadata, I need to issue an HTTP PATCH request, which I can do using `req.patch()`. Lastly, I read
+back in the attribute to verify that I've updated successfully, using my helper function `get_attribute()` and storing 
+the result in `af_attribute`. Because of the work I've done to return a dot-accessible dictionary, I can easily inspect 
+the attribute description simply via `af_attribute.Description`. Hello world!
+
+
+
 
