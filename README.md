@@ -233,6 +233,6 @@ In these examples, we've demonstrated the basic usage of PI Web API with the `re
 access PI System data within Python brings the rich features of Python into PI, such as its numerical and scientific libraries
 (numpy, scipy, pandas, scikit-learn, etc.) and also its popular web application framework (Django).
 
-For questions or comments, pelase visit the associated blog post in 
+For questions or comments, please visit the associated blog post in 
 [PI Developers Club](https://pisquare.osisoft.com/community/developers-club/blog/2015/06/04/using-pi-web-api-with-python).
 
