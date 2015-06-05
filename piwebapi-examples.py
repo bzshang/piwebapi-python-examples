@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     # 4.0 --------------------------------------------------------------------------------------------------------------
     # Retrieve the same attribute by path
-    req_params = {'path': '\\\\BSHANGE6430S\\SandBox\\MyElement|MyAttribute'}
+    req_params = {'path': '\\\\SECRETAFSERVER\\SandBox\\MyElement|MyAttribute'}
     af_attribute = get_attribute_by_path(pi_webapi_root, req_params)
 
     # 5.0 --------------------------------------------------------------------------------------------------------------
