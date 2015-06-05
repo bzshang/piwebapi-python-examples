@@ -1,4 +1,4 @@
-# Introduction
+## Introduction
 
 These examples show how to browse the AF object hierarchy, read/write values, and update attribute metadata.
 
@@ -213,7 +213,7 @@ attribute to introduce herself to the world. Here is how to do so.
 ```
 
 It is the same dog but maybe a new trick. I formulate the request JSON in `req_data`, set the header in `req_headers`
-and then call by helper function `update_af_attribute()`, shown below.
+and then call my helper function `update_af_attribute()`, shown below.
 
 ```Python
     attribute_update_response = req.patch(af_attribute_dict.Links.Self,
@@ -225,7 +225,7 @@ and then call by helper function `update_af_attribute()`, shown below.
 To update attribute metadata, I need to issue an HTTP PATCH request, which I can do using `req.patch()`. Lastly, I read
 back in the attribute to verify that I've updated successfully, using my helper function `get_attribute()` and storing 
 the result in `af_attribute`. Because of the work I've done to return a dot-accessible dictionary, I can easily inspect 
-the attribute description simply via `af_attribute.Description`. Hello world!
+the attribute description simply via `.Description`. Hello world!
 
 ## Summary
 
